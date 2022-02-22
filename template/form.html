@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>form</title>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+ <div class="header__left" >
+        <div class="header__actions">
+          {% if request.user.is_authenticated %}
+          <a href="/crudapp/logout"><i class="fa fa-sign-out"></i><p>Logout</p></a>
+          {% else %}
+          <a href="/crudapp/registration" ><i class="fa fa-sign-in"></i><p>Sign in</p></a>
+        <a href="/crudapp/login"><i class="fa fa-sign-out"></i><p>Sign up</p></a>
+          {% endif %}
+        
+      </div>
+    </div>
+     <div class="row">
+            
+          <div class="col-md-2"></div>
+          <div class="col-md-10">
+    <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="image">Student Image:</label>
+                      <input type="file" class="form-control" id="image"  name="image" >
+                    </div>
+                    <div class="form-group">
+                      <label for="user">Student Name:</label>
+                      <input type="text" class="form-control" id="studentname" placeholder="Enter Student name" name="studentname">
+                    </div>
+                    <div class="form-group">
+                      <label for="fname">Enrollment Number:</label>
+                      <input type="number" class="form-control" id="enumber" placeholder="Enter Enrollment Number" name="enumber" id="">
+                    </div>
+                     <div class="form-group">
+                      <label for="gender">Gender:</label><br>
+                      <input type="radio"name="gender" id="gender" value="male">male<br>
+   					  <input type="radio"name="gender" id="gender" value="female">female<br><br>
+                    </div>
+                    <div class="form-group">
+                      <label for="hobby">Hobbies:</label><br>
+                      <input type="checkbox" name="hobby" id="hobby" value="cricket">Cricket<br>  
+  					  <input type="checkbox" name="hobby" id="hobby" value="Basketball">Basketball<br>  
+  					  <input type="checkbox" name="hobby" id="hobby" value="Football">Football<br><br>
+                    </div>
+                    <div class="form-group">
+                      <label for="country">Country:</label>
+                      <select name="country" id="country">
+						<option value="India">India</option>
+						<option value="Canada">Canada</option> 
+						<option value="Japan">Japan</option>
+						<option value="Australia">Australia</option>
+					</select><br><br>
+                    </div>
+                    <div class="form-group">
+                      <label for="state">State:</label>
+                      <select name="state" id="state">
+						<option value="Gujarat">Gujarat</option>
+						<option value="Rajasthan">Rajasthan</option> 
+						<option value="Andhra Pradesh">Andhra Pradesh</option>
+						<option value="Tripura">Tripura</option>
+					</select><br><br>
+                    </div>
+                    <div class="form-group">
+                      <label for="city" >City:</label>
+                      <select name="city" id="city">
+						<option value="Mumbai">Mumbai</option>
+						<option value="Delhi">Delhi</option> 
+						<option value="Bangalore">Bangalore</option>
+						<option value="Ahmedabad">Ahmedabad</option>
+					</select><br><br>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+              
+                    <input type="submit" id="submit" class="btn btn-blue"></input>
+            		</div>
+                  </form>
+              </div>
+ <div class="container-fluid">
+        <div class="row">
+          
+          <div class="col-md-12">
+            <div class="card card-primary card-outline">
+              <div class="card-body">
+     <table class="table table-hover table-striped">
+    <thead>
+      <tr class="bg-primary">
+        <th>ID</th>
+        <th>Student Image</th>
+        <th>Student Name</th>
+        <th>Enrollment Number</th>
+        <th>Gender</th>
+        <th>Hobbies</th>
+        <th>Country</th>
+        <th>State</th>
+        <th>City</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for x in all_student_data %}
+      <tr>
+        <td>{{x.id}}</td>
+        <td><img src="{{x.student_img}}" height="100px" width="200px" /></td>
+        <td>{{x.student_name}}</td>
+        <td>{{x.enrollment_no}}</td>
+        <td>{{x.gender}}</td>
+        <td>{{x.hobby}}</td>
+        <td>{{x.country}}</td>
+        <td>{{x.city}}</td>
+        <td>{{x.state}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+  $(document).ready(function(){
+$('#submit').click(function(){
+  var studentname = $('#studentname').val()
+  var image = $('#image').val()
+  var enumber = $('#enumber').val()
+  var gender = $('#gender').val()
+  var hobby = $('#hobby').val()
+  var country = $('#country').val()
+  var state = $('#state').val()
+  var city = $('#city').val()
+  var csr = $("input[name=csrfmiddlewaretoken").val()
+
+  
+  
+  var mydata = {studentname:studentname, image:image, enumber:enumber, gender:gender, hobby:hobby, country:country,state:state, city:city, csrfmiddlewaretoken:csr}
+
+             $.ajax({
+                data: mydata,
+                url: "{% url 'form'%}",
+                dataType:"json",
+                method: "POST",
+                
+                
+                success: function(data){
+                    console.log("SUCCESS");
+                    alert(data);
+                },
+                failure: function(data){
+                    console.log("FAIL");
+                    console.log(data);
+                },
+
+  });
+});
+  }); 
+</script>
+
+
+        
+
+
